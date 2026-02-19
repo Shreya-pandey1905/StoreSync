@@ -67,7 +67,7 @@ const ResetPassword: React.FC = () => {
     try {
       await resetPassword(token, form.password);
       setSuccess('Password reset successful! Redirecting to login...');
-      
+
       // Redirect to login after 2 seconds
       setTimeout(() => {
         navigate('/login');
@@ -91,7 +91,7 @@ const ResetPassword: React.FC = () => {
             </p>
             <button
               onClick={() => navigate('/login')}
-              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200"
+              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-4 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Back to Login
             </button>
@@ -102,19 +102,19 @@ const ResetPassword: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen flex items-center justify-center px-4 py-8 bg-slate-50 dark:bg-slate-900">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full mb-4">
-            <Lock className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl mb-4">
+            <Lock className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Reset Password</h1>
-          <p className="text-gray-600">Enter your new password below</p>
+          <h1 className="text-3xl font-bold text-slate-800 dark:text-white mb-2">Reset Password</h1>
+          <p className="text-slate-500 dark:text-slate-400">Enter your new password below</p>
         </div>
 
         {/* Reset Password Form */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-8 border border-slate-200 dark:border-slate-700">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Alert Messages */}
             {error && (
@@ -123,7 +123,7 @@ const ResetPassword: React.FC = () => {
                 <span className="text-red-700 text-sm">{error}</span>
               </div>
             )}
-            
+
             {success && (
               <div className="flex items-center space-x-2 p-4 bg-green-50 border border-green-200 rounded-lg">
                 <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
@@ -145,7 +145,7 @@ const ResetPassword: React.FC = () => {
                   id="password"
                   name="password"
                   placeholder="Enter your new password"
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="w-full pl-10 pr-12 py-3 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                   value={form.password}
                   onChange={handleChange}
                   required
@@ -178,7 +178,7 @@ const ResetPassword: React.FC = () => {
                   id="confirmPassword"
                   name="confirmPassword"
                   placeholder="Confirm your new password"
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="w-full pl-10 pr-12 py-3 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                   value={form.confirmPassword}
                   onChange={handleChange}
                   required
@@ -201,7 +201,7 @@ const ResetPassword: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              className="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? (
                 <div className="flex items-center justify-center space-x-2">
@@ -217,7 +217,7 @@ const ResetPassword: React.FC = () => {
             <div className="text-center">
               <button
                 type="button"
-                className="flex items-center justify-center space-x-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+                className="flex items-center justify-center mx-auto space-x-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
                 onClick={() => navigate('/login')}
               >
                 <ArrowLeft className="w-4 h-4" />

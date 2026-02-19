@@ -16,7 +16,6 @@ import {
   ChevronDown,
   Store,
 } from 'lucide-react';
-import { useDarkMode } from '../context/DarkModeContext.tsx';
 import { getCurrentUser, logout } from '../services/authService.ts';
 import PermissionGuard from './PermissionGuard.tsx';
 
@@ -28,7 +27,6 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { darkMode } = useDarkMode();
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [profileImage, setProfileImage] = useState<string | null>(null);
@@ -106,7 +104,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
       <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-slate-800">
         {isOpen && (
           <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg">
+            <div className="p-1.5 bg-indigo-600 rounded-lg">
               <Store className="w-5 h-5 text-white" />
             </div>
             <span className="font-bold text-lg text-gray-900 dark:text-white">
@@ -134,7 +132,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
               to={item.href}
               className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 ${isOpen ? '' : 'justify-center'
                 } ${active
-                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30'
+                  ? 'bg-indigo-600 text-white shadow-md'
                   : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-blue-400'
                 }`}
             >
@@ -152,7 +150,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
             onClick={() => setShowProfileDropdown(!showProfileDropdown)}
             className="w-full flex items-center gap-3 p-2.5 rounded-xl transition-all hover:bg-gray-100 dark:hover:bg-slate-800"
           >
-            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center overflow-hidden shadow-lg">
+            <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center overflow-hidden">
               {profileImage ? (
                 <img
                   src={profileImage}
@@ -184,7 +182,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
           {/* Profile Dropdown */}
           {showProfileDropdown && isOpen && (
             <div className="absolute bottom-full left-0 right-0 mb-2 bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl shadow-2xl z-50 overflow-hidden">
-              <div className="p-4 border-b border-gray-100 dark:border-slate-700 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-700">
+              <div className="p-4 border-b border-gray-100 dark:border-slate-700 bg-indigo-50 dark:bg-slate-800">
                 <p className="text-sm font-semibold text-gray-900 dark:text-white">
                   {currentUser?.name || 'User'}
                 </p>

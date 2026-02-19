@@ -139,7 +139,7 @@ const Navbar: React.FC<NavbarProps> = ({
               onClick={() => setShowUserMenu(prev => !prev)}
               className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition-all"
             >
-              <div className="w-9 h-9 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center overflow-hidden shadow-lg">
+              <div className="w-9 h-9 bg-indigo-600 rounded-full flex items-center justify-center overflow-hidden">
                 {profileImage ? (
                   <img
                     src={profileImage}
@@ -163,7 +163,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
             {showUserMenu && (
               <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl shadow-2xl z-50 overflow-hidden">
-                <div className="p-4 border-b border-gray-100 dark:border-slate-700 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-700">
+                <div className="p-4 border-b border-gray-100 dark:border-slate-700 bg-indigo-50 dark:bg-slate-800">
                   <p className="text-sm font-semibold text-gray-900 dark:text-white">
                     {currentUser?.name || 'User'}
                   </p>

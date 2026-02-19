@@ -175,8 +175,8 @@ const Sales: React.FC = () => {
                 <div className="max-w-7xl mx-auto px-6 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <div className="p-2 bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow-lg">
-                                <ShoppingCart className="w-5 h-5 text-white" />
+                            <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl">
+                                <ShoppingCart className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                             </div>
                             <div>
                                 <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -206,7 +206,7 @@ const Sales: React.FC = () => {
                             >
                                 <button
                                     onClick={() => navigate('/sales/new')}
-                                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-lg shadow-green-500/25 hover:shadow-xl hover:shadow-green-500/30 transform hover:-translate-y-0.5 font-medium"
+                                    className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-all text-sm font-medium shadow-sm shadow-indigo-200 dark:shadow-none"
                                 >
                                     <Plus className="w-4 h-4" />
                                     <span className="hidden sm:inline">New Sale</span>
@@ -221,72 +221,72 @@ const Sales: React.FC = () => {
                 {/* Statistics Cards */}
                 {stats && stats.summary && (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div className="group bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-gray-200/60 dark:border-slate-700/60 rounded-2xl p-6 shadow-lg dark:shadow-slate-900/20 hover:shadow-2xl dark:hover:shadow-slate-900/40 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1">
+                        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 shadow-sm">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Sales</p>
-                                    <p className="text-3xl font-extrabold text-gray-900 dark:text-white mt-2">
+                                    <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Total Sales</p>
+                                    <p className="text-2xl font-bold text-slate-800 dark:text-white mt-1">
                                         {saleService.formatCurrency(stats.summary?.totalSales || 0)}
                                     </p>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                    <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">
                                         {stats.summary?.totalTransactions || 0} transactions
                                     </p>
                                 </div>
-                                <div className="p-4 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl shadow-lg group-hover:shadow-green-500/25 transition-all duration-300">
-                                    <DollarSign className="w-7 h-7 text-white" />
+                                <div className="p-2.5 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl">
+                                    <DollarSign className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                                 </div>
                             </div>
                         </div>
 
-                        <div className="group bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-gray-200/60 dark:border-slate-700/60 rounded-2xl p-6 shadow-lg dark:shadow-slate-900/20 hover:shadow-2xl dark:hover:shadow-slate-900/40 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1">
+                        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 shadow-sm">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Profit</p>
-                                    <p className="text-3xl font-extrabold text-gray-900 dark:text-white mt-2">
+                                    <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Total Profit</p>
+                                    <p className="text-2xl font-bold text-slate-800 dark:text-white mt-1">
                                         {saleService.formatCurrency(stats.summary?.totalProfit || 0)}
                                     </p>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                    <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">
                                         {stats.summary?.totalSales && stats.summary?.totalProfit ?
                                             ((stats.summary.totalProfit / stats.summary.totalSales) * 100).toFixed(1) : 0}% margin
                                     </p>
                                 </div>
-                                <div className="p-4 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg group-hover:shadow-blue-500/25 transition-all duration-300">
-                                    <TrendingUp className="w-7 h-7 text-white" />
+                                <div className="p-2.5 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl">
+                                    <TrendingUp className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                                 </div>
                             </div>
                         </div>
 
-                        <div className="group bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-gray-200/60 dark:border-slate-700/60 rounded-2xl p-6 shadow-lg dark:shadow-slate-900/20 hover:shadow-2xl dark:hover:shadow-slate-900/40 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1">
+                        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 shadow-sm">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Avg Order Value</p>
-                                    <p className="text-3xl font-extrabold text-gray-900 dark:text-white mt-2">
+                                    <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Avg Order Value</p>
+                                    <p className="text-2xl font-bold text-slate-800 dark:text-white mt-1">
                                         {saleService.formatCurrency(stats.summary?.averageOrderValue || 0)}
                                     </p>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                    <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">
                                         per transaction
                                     </p>
                                 </div>
-                                <div className="p-4 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl shadow-lg group-hover:shadow-purple-500/25 transition-all duration-300">
-                                    <BarChart3 className="w-7 h-7 text-white" />
+                                <div className="p-2.5 bg-violet-100 dark:bg-violet-900/30 rounded-xl">
+                                    <BarChart3 className="w-5 h-5 text-violet-600 dark:text-violet-400" />
                                 </div>
                             </div>
                         </div>
 
-                        <div className="group bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-gray-200/60 dark:border-slate-700/60 rounded-2xl p-6 shadow-lg dark:shadow-slate-900/20 hover:shadow-2xl dark:hover:shadow-slate-900/40 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1">
+                        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 shadow-sm">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Discounts</p>
-                                    <p className="text-3xl font-extrabold text-gray-900 dark:text-white mt-2">
+                                    <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Total Discounts</p>
+                                    <p className="text-2xl font-bold text-slate-800 dark:text-white mt-1">
                                         {saleService.formatCurrency(stats.summary?.totalDiscount || 0)}
                                     </p>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                    <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">
                                         {stats.summary?.totalSales && stats.summary?.totalDiscount ?
                                             ((stats.summary.totalDiscount / stats.summary.totalSales) * 100).toFixed(1) : 0}% of sales
                                     </p>
                                 </div>
-                                <div className="p-4 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl shadow-lg group-hover:shadow-orange-500/25 transition-all duration-300">
-                                    <ShoppingCart className="w-7 h-7 text-white" />
+                                <div className="p-2.5 bg-amber-100 dark:bg-amber-900/30 rounded-xl">
+                                    <ShoppingCart className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                                 </div>
                             </div>
                         </div>
@@ -294,7 +294,7 @@ const Sales: React.FC = () => {
                 )}
 
                 {/* Filters and Search */}
-                <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-gray-200/60 dark:border-slate-700/60 rounded-2xl p-6 shadow-lg dark:shadow-slate-900/20">
+                <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 shadow-sm">
                     <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
                         <div className="flex-1 flex flex-col sm:flex-row gap-4">
                             <div className="relative flex-1">
@@ -310,8 +310,8 @@ const Sales: React.FC = () => {
                             <button
                                 onClick={() => setShowFilters(!showFilters)}
                                 className={`px-4 py-2.5 border rounded-xl transition-all flex items-center gap-2 ${showFilters
-                                    ? 'border-green-500 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300'
-                                    : 'border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700'
+                                    ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300'
+                                    : 'border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
                                     }`}
                             >
                                 <Filter className="w-4 h-4" />
@@ -369,13 +369,13 @@ const Sales: React.FC = () => {
                                 <div className="flex gap-2">
                                     <button
                                         onClick={applyFilters}
-                                        className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
+                                        className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium"
                                     >
                                         Apply
                                     </button>
                                     <button
                                         onClick={clearFilters}
-                                        className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                                        className="px-4 py-2 bg-slate-500 hover:bg-slate-600 text-white rounded-lg transition-colors font-medium"
                                     >
                                         Clear
                                     </button>
@@ -386,7 +386,7 @@ const Sales: React.FC = () => {
                 </div>
 
                 {/* Sales Table */}
-                <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-gray-200/60 dark:border-slate-700/60 rounded-2xl shadow-lg dark:shadow-slate-900/20 overflow-hidden">
+                <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full min-w-max">
                             <thead className="bg-gray-50 dark:bg-slate-700/50">
@@ -575,29 +575,29 @@ const Sales: React.FC = () => {
 
             {/* Delete Confirmation Modal */}
             {showDeleteConfirmModal && saleToDeleteId && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl w-full max-w-md">
                         <div className="p-6">
                             <div className="flex justify-between items-center mb-6">
-                                <h2 className="text-2xl font-bold">Confirm Deletion</h2>
+                                <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Confirm Deletion</h2>
                                 <button
                                     onClick={() => setShowDeleteConfirmModal(false)}
-                                    className="text-gray-500 hover:text-gray-700"
+                                    className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors"
                                 >
                                     <X size={24} />
                                 </button>
                             </div>
 
                             <div className="space-y-4">
-                                <p className="text-gray-600">
+                                <p className="text-slate-600 dark:text-slate-300">
                                     Are you sure you want to delete sale "{sales.find(s => s._id === saleToDeleteId)?.saleNumber || 'this sale'}"? This action cannot be undone.
                                 </p>
                             </div>
 
-                            <div className="flex justify-end gap-3 mt-6 pt-6 border-t border-gray-200">
+                            <div className="flex justify-end gap-3 mt-6 pt-6 border-t border-slate-100 dark:border-slate-700">
                                 <button
                                     onClick={() => setShowDeleteConfirmModal(false)}
-                                    className="px-6 py-2 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50"
+                                    className="px-6 py-2 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
                                 >
                                     Cancel
                                 </button>

@@ -34,7 +34,7 @@ interface UserProfile {
 }
 
 const Profile: React.FC = () => {
-  const { darkMode } = useDarkMode();
+  const { } = useDarkMode();
   const navigate = useNavigate();
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -267,8 +267,8 @@ const Profile: React.FC = () => {
         <div className="max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl shadow-lg">
-                <User className="w-5 h-5 text-white" />
+              <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl">
+                <User className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-white leading-tight">My Profile</h1>
@@ -279,7 +279,7 @@ const Profile: React.FC = () => {
               {!isEditing ? (
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg shadow-blue-500/25 transform hover:-translate-y-0.5 font-medium"
+                  className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors text-sm font-medium"
                 >
                   <Edit3 className="w-4 h-4" />
                   <span>Edit Profile</span>
@@ -308,9 +308,8 @@ const Profile: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Profile Card */}
           <div className="lg:col-span-1">
-            <div className={`rounded-2xl shadow-xl overflow-hidden ${darkMode ? 'bg-gray-800' : 'bg-white'
-              }`}>
-              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-8 text-center">
+            <div className="rounded-2xl shadow-xl overflow-hidden bg-white dark:bg-slate-800">
+              <div className="bg-indigo-600 dark:bg-indigo-700 p-8 text-center">
                 <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 overflow-hidden">
                   {profileImage ? (
                     <img
@@ -331,24 +330,24 @@ const Profile: React.FC = () => {
               <div className="p-6">
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <Shield className={`w-5 h-5 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`} />
+                    <Shield className="w-5 h-5 text-slate-500 dark:text-slate-400" />
                     <div>
-                      <p className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                      <p className="text-sm font-medium text-slate-800 dark:text-white">
                         Role
                       </p>
-                      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      <p className="text-sm text-slate-500 dark:text-slate-400">
                         {user.role}
                       </p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <Calendar className={`w-5 h-5 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`} />
+                    <Calendar className="w-5 h-5 text-slate-500 dark:text-slate-400" />
                     <div>
-                      <p className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                      <p className="text-sm font-medium text-slate-800 dark:text-white">
                         Member Since
                       </p>
-                      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      <p className="text-sm text-slate-500 dark:text-slate-400">
                         {new Date(user.createdAt).toLocaleDateString()}
                       </p>
                     </div>
@@ -357,10 +356,10 @@ const Profile: React.FC = () => {
                   <div className="flex items-center gap-3">
                     <div className={`w-3 h-3 rounded-full ${user.isActive ? 'bg-green-500' : 'bg-red-500'}`} />
                     <div>
-                      <p className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                      <p className="text-sm font-medium text-slate-800 dark:text-white">
                         Status
                       </p>
-                      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      <p className="text-sm text-slate-500 dark:text-slate-400">
                         {user.isActive ? 'Active' : 'Inactive'}
                       </p>
                     </div>
@@ -372,9 +371,8 @@ const Profile: React.FC = () => {
 
           {/* Profile Form */}
           <div className="lg:col-span-2">
-            <div className={`rounded-2xl shadow-xl overflow-hidden ${darkMode ? 'bg-gray-800' : 'bg-white'
-              }`}>
-              <div className="bg-gradient-to-r from-gray-600 to-gray-700 px-8 py-6">
+            <div className="rounded-2xl shadow-xl overflow-hidden bg-white dark:bg-slate-800">
+              <div className="bg-slate-700 dark:bg-slate-800 px-8 py-6">
                 <h3 className="text-xl font-bold text-white">
                   {isEditing ? 'Edit Profile Information' : 'Profile Information'}
                 </h3>
@@ -397,8 +395,7 @@ const Profile: React.FC = () => {
                           id="name"
                           value={formData.name}
                           onChange={(e) => handleInputChange('name', e.target.value)}
-                          className={`mt-2 ${darkMode ? 'bg-gray-700 border-gray-600' : ''} ${errors.name ? 'border-red-300' : ''
-                            }`}
+                          className={`mt-2 bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white ${errors.name ? 'border-red-300 dark:border-red-600' : ''}`}
                           placeholder="Enter your full name"
                         />
                         {errors.name && (
@@ -406,7 +403,7 @@ const Profile: React.FC = () => {
                         )}
                       </div>
                     ) : (
-                      <p className={`mt-2 text-lg ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                      <p className="mt-2 text-lg text-slate-800 dark:text-white">
                         {user.name}
                       </p>
                     )}
@@ -425,8 +422,7 @@ const Profile: React.FC = () => {
                           type="email"
                           value={formData.email}
                           onChange={(e) => handleInputChange('email', e.target.value)}
-                          className={`mt-2 ${darkMode ? 'bg-gray-700 border-gray-600' : ''} ${errors.email ? 'border-red-300' : ''
-                            }`}
+                          className={`mt-2 bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white ${errors.email ? 'border-red-300 dark:border-red-600' : ''}`}
                           placeholder="Enter your email address"
                         />
                         {errors.email && (
@@ -434,7 +430,7 @@ const Profile: React.FC = () => {
                         )}
                       </div>
                     ) : (
-                      <p className={`mt-2 text-lg ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                      <p className="mt-2 text-lg text-slate-800 dark:text-white">
                         {user.email}
                       </p>
                     )}
@@ -453,8 +449,7 @@ const Profile: React.FC = () => {
                           type="tel"
                           value={formData.phone}
                           onChange={(e) => handleInputChange('phone', e.target.value)}
-                          className={`mt-2 ${darkMode ? 'bg-gray-700 border-gray-600' : ''} ${errors.phone ? 'border-red-300' : ''
-                            }`}
+                          className={`mt-2 bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white ${errors.phone ? 'border-red-300 dark:border-red-600' : ''}`}
                           placeholder="Enter your phone number"
                         />
                         {errors.phone && (
@@ -462,7 +457,7 @@ const Profile: React.FC = () => {
                         )}
                       </div>
                     ) : (
-                      <p className={`mt-2 text-lg ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                      <p className="mt-2 text-lg text-slate-800 dark:text-white">
                         {user.phone || 'Not provided'}
                       </p>
                     )}
@@ -480,12 +475,12 @@ const Profile: React.FC = () => {
                           id="address"
                           value={formData.address}
                           onChange={(e) => handleInputChange('address', e.target.value)}
-                          className={`mt-2 ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}
+                          className="mt-2 bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white"
                           placeholder="Enter your address"
                         />
                       </div>
                     ) : (
-                      <p className={`mt-2 text-lg ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                      <p className="mt-2 text-lg text-slate-800 dark:text-white">
                         {user.address || 'Not provided'}
                       </p>
                     )}
@@ -510,11 +505,11 @@ const Profile: React.FC = () => {
                                 />
                               </div>
                             ) : (
-                              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center">
+                              <div className="w-16 h-16 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center">
                                 {uploadingImage ? (
                                   <Loader2 className="w-6 h-6 text-white animate-spin" />
                                 ) : (
-                                  <User className="w-8 h-8 text-white" />
+                                  <User className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
                                 )}
                               </div>
                             )}
@@ -569,7 +564,7 @@ const Profile: React.FC = () => {
                             />
                           </div>
                         ) : (
-                          <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center">
+                          <div className="w-16 h-16 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center">
                             <User className="w-8 h-8 text-white" />
                           </div>
                         )}

@@ -38,10 +38,10 @@ const Register: React.FC = () => {
     try {
       setRolesLoading(true);
       console.log('🔍 Fetching roles from API...');
-      
+
       // Use direct axios call without auth headers for public access
       const response = await axios.get('http://localhost:5000/api/roles');
-      
+
       if (response.data.success) {
         setRoles(response.data.data || []);
         // Don't automatically set role - let user choose from dropdown
@@ -135,17 +135,17 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen flex items-center justify-center px-4 py-8 bg-slate-50 dark:bg-slate-900">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full mb-4">
-            <Store className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl mb-4">
+            <Store className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h1>
-          <p className="text-gray-600">Join our SmartKirana management platform</p>
+          <h1 className="text-3xl font-bold text-slate-800 dark:text-white mb-2">Create Account</h1>
+          <p className="text-slate-500 dark:text-slate-400">Join our SmartKirana management platform</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-8 border border-slate-200 dark:border-slate-700">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
               <div className="flex items-center space-x-2 p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -163,7 +163,7 @@ const Register: React.FC = () => {
 
             {/* Name Field */}
             <div className="space-y-2">
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="name" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
                 Full Name
               </label>
               <div className="relative">
@@ -175,7 +175,7 @@ const Register: React.FC = () => {
                   id="name"
                   name="name"
                   placeholder="Enter your full name"
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="w-full pl-10 pr-4 py-3 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                   value={form.name}
                   onChange={handleChange}
                   required
@@ -185,7 +185,7 @@ const Register: React.FC = () => {
 
             {/* Email Field */}
             <div className="space-y-2">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="email" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
                 Email Address
               </label>
               <div className="relative">
@@ -197,7 +197,7 @@ const Register: React.FC = () => {
                   id="email"
                   name="email"
                   placeholder="Enter your email"
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="w-full pl-10 pr-4 py-3 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                   value={form.email}
                   onChange={handleChange}
                   required
@@ -207,7 +207,7 @@ const Register: React.FC = () => {
 
             {/* Password Field */}
             <div className="space-y-2">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="password" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
                 Password
               </label>
               <div className="relative">
@@ -219,7 +219,7 @@ const Register: React.FC = () => {
                   id="password"
                   name="password"
                   placeholder="Create a strong password"
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="w-full pl-10 pr-12 py-3 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                   value={form.password}
                   onChange={handleChange}
                   required
@@ -240,7 +240,7 @@ const Register: React.FC = () => {
 
             {/* Confirm Password Field */}
             <div className="space-y-2">
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
                 Confirm Password
               </label>
               <div className="relative">
@@ -252,7 +252,7 @@ const Register: React.FC = () => {
                   id="confirmPassword"
                   name="confirmPassword"
                   placeholder="Confirm your password"
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="w-full pl-10 pr-12 py-3 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                   value={form.confirmPassword}
                   onChange={handleChange}
                   required
@@ -273,7 +273,7 @@ const Register: React.FC = () => {
 
             {/* Role Selection */}
             <div className="space-y-2">
-              <label htmlFor="role" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="role" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
                 Role
               </label>
               <div className="relative">
@@ -283,7 +283,7 @@ const Register: React.FC = () => {
                 <select
                   id="role"
                   name="role"
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors appearance-none bg-white"
+                  className="w-full pl-10 pr-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors appearance-none bg-white dark:bg-slate-800 text-slate-800 dark:text-white"
                   value={form.role}
                   onChange={handleChange}
                   disabled={rolesLoading}
@@ -314,7 +314,7 @@ const Register: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              className="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? (
                 <div className="flex items-center justify-center space-x-2">
@@ -328,11 +328,11 @@ const Register: React.FC = () => {
 
             {/* Sign In Link */}
             <div className="text-center">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-slate-500 dark:text-slate-400">
                 Already have an account?{' '}
                 <button
                   type="button"
-                  className="text-blue-600 hover:text-blue-700 font-medium hover:underline"
+                  className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 font-medium hover:underline"
                   onClick={() => navigate('/login')}
                 >
                   Sign in here
@@ -344,7 +344,7 @@ const Register: React.FC = () => {
 
         {/* Footer */}
         <div className="text-center mt-8">
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-slate-400 dark:text-slate-500">
             By creating an account, you agree to our Terms of Service and Privacy Policy
           </p>
         </div>

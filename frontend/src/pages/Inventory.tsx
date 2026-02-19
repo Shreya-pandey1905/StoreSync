@@ -73,7 +73,7 @@ const ProductCard: React.FC<{
                 className="w-24 h-24 object-cover rounded-xl shadow-md"
               />
             ) : (
-              <div className="w-24 h-24 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-slate-700 dark:to-slate-600 flex items-center justify-center shadow-md">
+              <div className="w-24 h-24 rounded-xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center shadow-sm">
                 <Package className="text-gray-400 dark:text-gray-500" size={36} />
               </div>
             )}
@@ -84,7 +84,7 @@ const ProductCard: React.FC<{
               <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate">
                 {product.name}
               </h3>
-              <span className="text-xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent ml-2">
+              <span className="text-xl font-extrabold text-indigo-600 dark:text-indigo-400 ml-2">
                 ₹{product.price.toFixed(2)}
               </span>
             </div>
@@ -182,7 +182,7 @@ const ProductCard: React.FC<{
             className="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
-          <div className="w-full h-52 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-slate-700 dark:to-slate-600 flex items-center justify-center">
+          <div className="w-full h-52 bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
             <Package className="text-gray-400 dark:text-gray-500" size={56} />
           </div>
         )}
@@ -212,7 +212,7 @@ const ProductCard: React.FC<{
               {product.category} • {product.brand || 'No brand'}
             </p>
           </div>
-          <span className="text-xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent ml-2">
+          <span className="text-xl font-extrabold text-indigo-600 dark:text-indigo-400 ml-2">
             ₹{product.price.toFixed(2)}
           </span>
         </div>
@@ -518,8 +518,8 @@ const Inventory: React.FC = () => {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl shadow-lg">
-                <Package className="w-5 h-5 text-white" />
+              <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl">
+                <Package className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -544,7 +544,7 @@ const Inventory: React.FC = () => {
               >
                 <button
                   onClick={() => navigate('/add-product')}
-                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 transform hover:-translate-y-0.5 font-medium"
+                  className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-all text-sm font-medium shadow-md shadow-indigo-200 dark:shadow-none"
                 >
                   <Plus size={18} />
                   Add Product
@@ -589,26 +589,29 @@ const Inventory: React.FC = () => {
         </div>
 
         {/* Search and Filters */}
-        <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl border border-gray-200/60 dark:border-slate-700/60 p-6 shadow-lg dark:shadow-slate-900/20">
-          <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
-            <div className="flex flex-1 items-center gap-4 w-full">
-              <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" size={20} />
-                <input
-                  type="text"
-                  placeholder="Search products..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 transition-all"
-                />
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-6 rounded-2xl shadow-sm">
+          <div className="flex flex-col lg:flex-row gap-6 items-end justify-between">
+            <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="relative">
+                <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest px-1">Search Products</label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 dark:text-slate-500" size={18} />
+                  <input
+                    type="text"
+                    placeholder="Search by name, brand..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all placeholder-slate-400 dark:placeholder-slate-500 font-medium"
+                  />
+                </div>
               </div>
 
               <div className="relative">
-                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Category</label>
+                <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest px-1">Category</label>
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="px-3 py-2 border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 transition-all"
+                  className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium appearance-none"
                 >
                   <option value="">All Categories</option>
                   {PRODUCT_CATEGORIES.map(category => (
@@ -618,11 +621,11 @@ const Inventory: React.FC = () => {
               </div>
 
               <div className="relative">
-                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Store</label>
+                <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest px-1">Store Location</label>
                 <select
                   value={selectedStore}
                   onChange={(e) => setSelectedStore(e.target.value)}
-                  className="px-3 py-2 border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 transition-all"
+                  className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium appearance-none"
                 >
                   <option value="">All Stores</option>
                   {stores.map(store => (
@@ -632,9 +635,9 @@ const Inventory: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Sort By</label>
+            <div className="flex items-center gap-4 w-full lg:w-auto">
+              <div className="relative flex-1">
+                <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest px-1">Sort By</label>
                 <select
                   value={`${sortBy}-${sortOrder}`}
                   onChange={(e) => {
@@ -642,7 +645,7 @@ const Inventory: React.FC = () => {
                     setSortBy(field as any);
                     setSortOrder(order as any);
                   }}
-                  className="px-3 py-2 border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 transition-all"
+                  className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium appearance-none"
                 >
                   <option value="name-asc">Name A-Z</option>
                   <option value="name-desc">Name Z-A</option>
@@ -655,19 +658,22 @@ const Inventory: React.FC = () => {
                 </select>
               </div>
 
-              <div className="flex rounded-xl border border-gray-200 dark:border-slate-600 overflow-hidden shadow-sm">
-                <button
-                  onClick={() => setViewMode('grid')}
-                  className={`p-2.5 transition-all ${viewMode === 'grid' ? 'bg-blue-500 text-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700'}`}
-                >
-                  <Grid size={18} />
-                </button>
-                <button
-                  onClick={() => setViewMode('list')}
-                  className={`p-2.5 transition-all ${viewMode === 'list' ? 'bg-blue-500 text-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700'}`}
-                >
-                  <List size={18} />
-                </button>
+              <div className="flex flex-col">
+                <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest px-1">Layout</label>
+                <div className="flex h-[42px] bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden p-1 shadow-inner">
+                  <button
+                    onClick={() => setViewMode('grid')}
+                    className={`flex-1 flex items-center justify-center rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600'}`}
+                  >
+                    <Grid size={18} />
+                  </button>
+                  <button
+                    onClick={() => setViewMode('list')}
+                    className={`flex-1 flex items-center justify-center rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600'}`}
+                  >
+                    <List size={18} />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -726,48 +732,43 @@ const Inventory: React.FC = () => {
       </div>
       {/* Delete Confirmation Modal */}
       {showDeleteConfirmModal && productToDeleteId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-            <div className="p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl shadow-2xl w-full max-w-md">
+            <div className="p-8">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Confirm Deletion</h2>
+                <h2 className="text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tighter">Confirm Deletion</h2>
                 <button
                   onClick={() => setShowDeleteConfirmModal(false)}
-                  className="text-gray-500 hover:text-gray-700"
+                  className="p-2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors"
                 >
                   <X size={24} />
                 </button>
               </div>
 
-              <div className="space-y-4">
-                <p className="text-gray-600">
-                  Are you sure you want to delete product "{products.find(p => p._id === productToDeleteId)?.name || 'this product'}"? This action cannot be undone.
+              <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-2xl border border-red-100 dark:border-red-900/30 mb-6">
+                <p className="text-slate-600 dark:text-slate-300 font-medium">
+                  Are you sure you want to delete product <span className="font-bold text-slate-900 dark:text-white">"{products.find(p => p._id === productToDeleteId)?.name || 'this product'}"</span>? This action cannot be undone.
                 </p>
               </div>
 
-              <div className="flex justify-end gap-3 mt-6 pt-6 border-t border-gray-200">
-                <button
-                  onClick={() => setShowDeleteConfirmModal(false)}
-                  className="px-6 py-2 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
+              <div className="flex flex-col gap-3">
                 <button
                   onClick={confirmDelete}
                   disabled={loading}
-                  className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 flex items-center gap-2"
+                  className="w-full px-6 py-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-black uppercase tracking-widest transition-all active:scale-95 shadow-xl shadow-red-200 dark:shadow-none"
                 >
                   {loading ? (
-                    <>
-                      <RefreshCw className="w-4 h-4 animate-spin" />
+                    <div className="flex items-center justify-center gap-2">
+                      <RefreshCw className="w-5 h-5 animate-spin" />
                       Deleting...
-                    </>
-                  ) : (
-                    <>
-                      <Trash2 className="w-4 h-4" />
-                      Delete Product
-                    </>
-                  )}
+                    </div>
+                  ) : 'Yes, Delete Product'}
+                </button>
+                <button
+                  onClick={() => setShowDeleteConfirmModal(false)}
+                  className="w-full px-6 py-3 text-slate-500 dark:text-slate-400 font-bold hover:text-slate-700 dark:hover:text-slate-300 transition-all font-bold"
+                >
+                  No, Keep it
                 </button>
               </div>
             </div>

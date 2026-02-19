@@ -7,10 +7,10 @@ import {
   ShoppingCart,
   DollarSign,
   Calculator,
-  X
+  X,
+  RefreshCw
 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useDarkMode } from '../context/DarkModeContext.tsx';
 import saleService from '../services/saleService.ts';
 import productService from '../services/productService.ts';
 import axiosInstance from '../api/axiosInstance.ts';
@@ -35,7 +35,6 @@ interface SaleItem {
 }
 
 const NewSale: React.FC = () => {
-  const { darkMode } = useDarkMode();
   const navigate = useNavigate();
   const { id } = useParams(); // 🔹 editing
 
@@ -209,183 +208,304 @@ const NewSale: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-slate-900 dark:to-slate-800 transition-all duration-300">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-all duration-300">
       {/* Header */}
-      <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-gray-200/60 dark:border-slate-700/60 sticky top-0 z-40 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-6 flex items-center gap-4">
-          <button onClick={() => navigate('/sales')} className="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-700 rounded-xl transition-all duration-200">
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Quick Sale</h1>
-            <p className="text-gray-600 dark:text-gray-300">Create a new sales transaction</p>
+      <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-40 shadow-sm">
+        <div className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button onClick={() => navigate('/sales')} className="p-2.5 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition-all">
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <div>
+              <h1 className="text-2xl font-bold text-slate-800 dark:text-white">
+                {id ? 'Edit Sale' : 'Create New Sale'}
+              </h1>
+              <p className="text-sm text-slate-500 dark:text-slate-400">{id ? 'Modifying existing sales record' : 'Process a new customer transaction'}</p>
+            </div>
+          </div>
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-lg border border-indigo-100 dark:border-indigo-800/50">
+            <ShoppingCart className="w-4 h-4" />
+            <span className="font-bold text-xs uppercase tracking-wider">{items.length} Items</span>
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-          {/* Store Select */}
-          <div>
-            <label className="block text-sm font-medium mb-1">Select Store</label>
-            <select
-              value={selectedStore}
-              onChange={(e) => setSelectedStore(e.target.value)}
-              className="w-full border rounded-lg p-2 bg-transparent"
-            >
-              <option value="">-- Select a Store --</option>
-              {stores.map(store => <option key={store._id} value={store._id}>{store.name}</option>)}
-            </select>
-          </div>
+          {/* Main Content Area */}
+          <div className="lg:col-span-2 space-y-6">
 
-          {/* Sale Items */}
-          <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-gray-200/60 dark:border-slate-700/60 rounded-2xl p-6 shadow-lg">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold flex items-center gap-2 text-gray-900 dark:text-white">
-                <DollarSign className="w-5 h-5 text-blue-500" /> Sale Items
-              </h2>
-              <button type="button" onClick={() => setShowProductSearch(true)} className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-medium rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                <Plus className="w-5 h-5" /> Add Item
-              </button>
-            </div>
-
-            {showProductSearch && (
-              <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-2xl max-h-[80vh] overflow-hidden">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Search Products</h3>
-                    <button onClick={() => setShowProductSearch(false)} className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors">
-                      <X className="w-5 h-5" />
-                    </button>
-                  </div>
-
-                  <div className="relative mb-4">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                    <input
-                      type="text"
-                      value={searchQuery}
-                      onChange={e => setSearchQuery(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2.5 border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 transition-all"
-                      placeholder="Search products by name, category, or brand..."
-                      autoFocus
-                    />
-                  </div>
-
-                  <div className="overflow-y-auto max-h-96 space-y-2">
-                    {filteredProducts.map(product => (
-                      <div key={product._id} onClick={() => addItem(product)} className="p-4 border border-gray-200 dark:border-slate-600 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 cursor-pointer transition-colors">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <div className="font-medium text-gray-900 dark:text-white">{product.name}</div>
-                            <div className="text-sm text-gray-500 dark:text-gray-400">{product.brand} • {product.category}</div>
-                            <div className="text-sm text-gray-500 dark:text-gray-400">Stock: {product.quantity} • Cost: ₹{product.costPrice}</div>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-lg font-semibold text-green-600 dark:text-green-400">₹{product.price}</div>
-                            <div className="text-sm text-gray-500 dark:text-gray-400">{product.quantity > 0 ? 'In Stock' : 'Out of Stock'}</div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+            {/* Store Selection Card */}
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 shadow-sm">
+              <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 px-1">Select Store</label>
+              <div className="relative">
+                <select
+                  value={selectedStore}
+                  onChange={(e) => setSelectedStore(e.target.value)}
+                  className="w-full pl-4 pr-10 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium appearance-none cursor-pointer"
+                >
+                  <option value="">-- Choose Store Location --</option>
+                  {stores.map(store => <option key={store._id} value={store._id}>{store.name}</option>)}
+                </select>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                  <ArrowLeft className="w-4 h-4 -rotate-90" />
                 </div>
               </div>
-            )}
+            </div>
 
-            {items.length === 0 ? (
-              <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-                <ShoppingCart className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                <p className="text-lg font-medium">No items added</p>
-                <p className="text-sm">Click "Add Item" to start building your sale</p>
+            {/* Cart Items Card */}
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm overflow-hidden min-h-[400px] flex flex-col">
+              <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/30 flex items-center justify-between">
+                <h2 className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-tight flex items-center gap-2">
+                  <ShoppingCart className="w-4 h-4 text-indigo-500" />
+                  Selected Products
+                </h2>
+                <button
+                  type="button"
+                  onClick={() => setShowProductSearch(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition-all text-xs shadow-sm"
+                >
+                  <Plus className="w-4 h-4" />
+                  Add Products
+                </button>
               </div>
-            ) : (
-              <div className="space-y-4">
-                {items.map((item, index) => (
-                  <div key={index} className="flex items-center gap-4 p-4 border border-gray-200 dark:border-slate-600 rounded-xl bg-gray-50 dark:bg-slate-700/50">
-                    <div className="flex-1">
-                      <div className="font-medium text-gray-900 dark:text-white">{item.productName}</div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">Cost: ₹{item.costPrice}</div>
-                    </div>
 
-                    <div className="flex items-center gap-2">
-                      <label className="text-sm text-gray-700 dark:text-gray-300">Qty:</label>
-                      <input type="number" min="1" value={item.quantity} onChange={e => updateItemQuantity(index, parseInt(e.target.value) || 1)} className="w-20 px-3 py-2 border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" />
+              <div className="flex-1 p-6">
+                {items.length === 0 ? (
+                  <div className="h-full flex flex-col items-center justify-center text-center space-y-4 py-20 grayscale opacity-40">
+                    <div className="p-6 bg-slate-100 dark:bg-slate-700 rounded-full">
+                      <ShoppingCart className="w-12 h-12 text-slate-400" />
                     </div>
-
-                    <div className="flex items-center gap-2">
-                      <label className="text-sm text-gray-700 dark:text-gray-300">Price:</label>
-                      <input type="number" min="0" step="0.01" value={item.unitPrice} onChange={e => updateItemPrice(index, parseFloat(e.target.value) || 0)} className="w-24 px-3 py-2 border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" />
+                    <div>
+                      <p className="text-slate-800 dark:text-white font-bold text-sm">Your cart is empty</p>
+                      <p className="text-slate-500 dark:text-slate-400 text-xs">Search and add items to begin the sale</p>
                     </div>
-
-                    <div className="text-right min-w-[100px]">
-                      <div className="font-semibold text-gray-900 dark:text-white">₹{item.totalPrice.toFixed(2)}</div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">Profit: ₹{((item.unitPrice - item.costPrice) * item.quantity).toFixed(2)}</div>
-                    </div>
-
-                    <button type="button" onClick={() => removeItem(index)} className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
                   </div>
-                ))}
+                ) : (
+                  <div className="space-y-4">
+                    {items.map((saleItem, itemIndex) => {
+                      return (
+                        <div key={itemIndex} className="group flex flex-col sm:flex-row sm:items-center gap-4 p-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-xl transition-all hover:border-indigo-200 dark:hover:border-indigo-800">
+                          <div className="flex-1">
+                            <div className="font-bold text-slate-800 dark:text-white tracking-tight leading-tight">{saleItem.productName}</div>
+                            <div className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mt-1">Cost: ₹{saleItem.costPrice.toFixed(2)}</div>
+                          </div>
+
+                          <div className="flex items-center gap-4">
+                            <div className="flex flex-col gap-1">
+                              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Qty</label>
+                              <input
+                                type="number"
+                                min="1"
+                                value={saleItem.quantity}
+                                onChange={e => updateItemQuantity(itemIndex, parseInt(e.target.value) || 1)}
+                                className="w-16 px-2 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-bold text-center"
+                              />
+                            </div>
+
+                            <div className="flex flex-col gap-1">
+                              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Price</label>
+                              <input
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                value={saleItem.unitPrice}
+                                onChange={e => updateItemPrice(itemIndex, parseFloat(e.target.value) || 0)}
+                                className="w-20 px-2 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-bold text-center"
+                              />
+                            </div>
+
+                            <div className="text-right min-w-[100px]">
+                              <div className="text-lg font-bold text-slate-800 dark:text-white">₹{saleItem.totalPrice.toFixed(2)}</div>
+                              <div className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
+                                In Profit
+                              </div>
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => removeItem(itemIndex)}
+                              className="p-2 text-slate-400 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
 
-          {/* Sale Details */}
-          <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-gray-200/60 dark:border-slate-700/60 rounded-2xl p-6 shadow-lg">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-              <Calculator className="w-5 h-5 text-purple-500" /> Sale Details
-            </h2>
+          <div className="space-y-6">
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 shadow-sm sticky top-24">
+              <h2 className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-tight flex items-center gap-2 mb-6">
+                <Calculator className="w-4 h-4 text-purple-500" />
+                Sale Summary
+              </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Payment Method</label>
-                  <select value={paymentMethod} onChange={e => allowedMethods.includes(e.target.value as any) && setPaymentMethod(e.target.value as any)} className="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:focus:ring-green-400 transition-all">
+                  <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 px-1">Payment Method</label>
+                  <select
+                    value={paymentMethod}
+                    onChange={e => allowedMethods.includes(e.target.value as any) && setPaymentMethod(e.target.value as any)}
+                    className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-bold appearance-none"
+                  >
                     {allowedMethods.map(method => <option key={method} value={method}>{method.charAt(0).toUpperCase() + method.slice(1)}</option>)}
                   </select>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Discount (₹)</label>
-                  <input type="number" min="0" step="0.01" value={discount} onChange={e => setDiscount(parseFloat(e.target.value) || 0)} className="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:focus:ring-green-400 transition-all" />
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 px-1">Discount (₹)</label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={discount}
+                      onChange={e => setDiscount(parseFloat(e.target.value) || 0)}
+                      className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 px-1">Tax (₹)</label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={tax}
+                      onChange={e => setTax(parseFloat(e.target.value) || 0)}
+                      className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-bold"
+                    />
+                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tax (₹)</label>
-                  <input type="number" min="0" step="0.01" value={tax} onChange={e => setTax(parseFloat(e.target.value) || 0)} className="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:focus:ring-green-400 transition-all" />
+                  <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 px-1">Sale Notes</label>
+                  <textarea
+                    value={notes}
+                    onChange={e => setNotes(e.target.value)}
+                    rows={3}
+                    className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium resize-none"
+                    placeholder="Customer details, references..."
+                  />
+                </div>
+
+                <div className="pt-6 border-t border-slate-100 dark:border-slate-700/50 space-y-3">
+                  <div className="flex justify-between text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tight">
+                    Subtotal <span>₹{subtotal.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-xs font-bold text-red-500 uppercase tracking-tight">
+                    Discount <span>-₹{discount.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tight">
+                    Tax <span>+₹{tax.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between pt-4 border-t border-slate-100 dark:border-slate-700/50">
+                    <span className="text-xl font-bold text-slate-800 dark:text-white">Grand Total</span>
+                    <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">₹{totalAmount.toFixed(2)}</span>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-3 pt-6">
+                  <button
+                    onClick={handleSubmit}
+                    disabled={loading || items.length === 0}
+                    className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-sm transition-all active:scale-95 shadow-sm disabled:opacity-50"
+                  >
+                    {loading ? (
+                      <RefreshCw className="w-5 h-5 animate-spin mx-auto" />
+                    ) : (id ? 'Update Sale Record' : 'Complete Sale')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => navigate('/sales')}
+                    className="w-full py-2 text-slate-500 dark:text-slate-400 font-bold text-xs hover:text-slate-700 dark:hover:text-slate-300 transition-all uppercase tracking-wider"
+                  >
+                    Discard Changes
+                  </button>
                 </div>
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Notes (Optional)</label>
-                <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={6} className="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:focus:ring-green-400 transition-all" placeholder="Add notes..." />
-              </div>
-            </div>
-
-            {/* Totals */}
-            <div className="mt-6 border-t border-gray-200 dark:border-slate-600 pt-4 space-y-2">
-              <div className="flex justify-between text-gray-600 dark:text-gray-400">Subtotal: <span>₹{subtotal.toFixed(2)}</span></div>
-              <div className="flex justify-between text-gray-600 dark:text-gray-400">Discount: <span>-₹{discount.toFixed(2)}</span></div>
-              <div className="flex justify-between text-gray-600 dark:text-gray-400">Tax: <span>+₹{tax.toFixed(2)}</span></div>
-              <div className="flex justify-between text-xl font-bold text-gray-900 dark:text-white">Total Amount: <span>₹{totalAmount.toFixed(2)}</span></div>
-            </div>
-
-            {/* Buttons */}
-            <div className="mt-6 flex gap-4">
-              <button type="submit" disabled={loading || items.length === 0} className="px-8 py-3 bg-green-600 text-white rounded-xl disabled:opacity-50">{loading ? (id ? 'Updating...' : 'Creating...') : id ? 'Update Sale' : 'Create Sale'}</button>
-              <button type="button" onClick={() => navigate('/sales')} className="px-8 py-3 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 font-medium rounded-xl transition-colors">Cancel</button>
             </div>
           </div>
-        </form>
+        </div>
 
-        {/* Error */}
-        {error && <div className="mt-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700/60 rounded-xl p-4 text-red-800 dark:text-red-200">{error}</div>}
-
-        {/* Success */}
-        {success && <div className="mt-4 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700/60 rounded-xl p-4 text-green-800 dark:text-green-200">{success}</div>}
+        {/* Global Notifications */}
+        <div className="mt-8 space-y-4">
+          {error && (
+            <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-xl flex items-center gap-3 font-bold text-xs">
+              <X className="w-4 h-4" />
+              {error}
+            </div>
+          )}
+          {success && (
+            <div className="p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 rounded-xl flex items-center gap-3 font-bold text-xs">
+              <Plus className="w-4 h-4" />
+              {success}
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Product Search Overlay */}
+      {showProductSearch && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl p-6 w-full max-w-2xl max-h-[85vh] flex flex-col transform transition-all">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-slate-800 dark:text-white">Product Search</h2>
+              <button onClick={() => setShowProductSearch(false)} className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-all">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="relative mb-6">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 pointer-events-none" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="w-full pl-12 pr-6 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium placeholder-slate-400"
+                placeholder="Search products by name, category, or brand..."
+                autoFocus
+              />
+            </div>
+
+            <div className="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar">
+              {filteredProducts.map(product => (
+                <div
+                  key={product._id}
+                  onClick={() => addItem(product)}
+                  className="p-4 border border-slate-100 dark:border-slate-700/50 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:border-indigo-200 dark:hover:border-indigo-800 cursor-pointer transition-all group"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="font-bold text-slate-900 dark:text-white tracking-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{product.name}</div>
+                      <div className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-1">
+                        {product.brand} • {product.category}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xl font-bold text-slate-800 dark:text-white tracking-tight">₹{product.price.toFixed(2)}</div>
+                      <div className="text-[10px] font-bold uppercase tracking-wider mt-1 text-slate-400">
+                        In Stock: <span className={product.quantity > 0 ? 'text-emerald-500' : 'text-red-500'}>{product.quantity}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {filteredProducts.length === 0 && (
+                <div className="py-20 text-center text-slate-400 font-bold uppercase text-xs tracking-widest">
+                  No products match your search
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -2,19 +2,19 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axiosInstance from '../api/axiosInstance.ts';
-import { 
-  Package, 
-  AlertCircle, 
-  CheckCircle, 
-  Save, 
-  X, 
-  Eye, 
+import {
+  Package,
+  AlertCircle,
+  Save,
+  X,
+  Eye,
   EyeOff,
-  Loader2,
   ShoppingCart,
   DollarSign,
   Calendar,
-  Tag
+  Tag,
+  ArrowLeft,
+  RefreshCw
 } from 'lucide-react';
 import { PRODUCT_CATEGORIES } from '../constants/categories.ts';
 
@@ -86,7 +86,7 @@ const ProductForm: React.FC = () => {
     const fetchStores = async () => {
       try {
         const response = await axiosInstance.get('/stores');
-        const data = response.data?.data || response.data; // support both {success,data} and array
+        const data = response.data?.data || response.data;
         if (Array.isArray(data)) setStores(data);
       } catch (error) {
         setErrors(prev => ({ ...prev, stores: 'Failed to load stores' }));
@@ -126,8 +126,8 @@ const ProductForm: React.FC = () => {
               ...product,
               store: typeof product.store === 'object' ? product.store._id : product.store,
               supplier: typeof product.supplier === 'object' ? product.supplier._id : product.supplier,
-              expiryDate: product.expiryDate 
-                ? new Date(product.expiryDate).toISOString().split('T')[0] 
+              expiryDate: product.expiryDate
+                ? new Date(product.expiryDate).toISOString().split('T')[0]
                 : ''
             });
           }
@@ -147,39 +147,39 @@ const ProductForm: React.FC = () => {
         if (!value?.trim()) return 'Product name is required';
         if (value.trim().length < 2) return 'Product name must be at least 2 characters';
         return '';
-      
+
       case 'category':
         if (!value) return 'Category is required';
         return '';
-      
+
       case 'price':
         if (!value && value !== 0) return 'Price is required';
         if (Number(value) < 0) return 'Price cannot be negative';
         if (Number(value) <= Number(form.costPrice)) return 'Price should be higher than cost price';
         return '';
-      
+
       case 'costPrice':
         if (!value && value !== 0) return 'Cost price is required';
         if (Number(value) < 0) return 'Cost price cannot be negative';
         return '';
-      
+
       case 'quantity':
         if (!value && value !== 0) return 'Quantity is required';
         if (Number(value) < 0) return 'Quantity cannot be negative';
         return '';
-      
+
       case 'store':
         if (!value) return 'Store selection is required';
         return '';
-      
+
       case 'reorderLevel':
         if (value && Number(value) < 0) return 'Reorder level cannot be negative';
         return '';
-      
+
       case 'barcode':
         if (value && value.length < 8) return 'Barcode must be at least 8 characters';
         return '';
-      
+
       case 'expiryDate':
         if (value) {
           const today = new Date();
@@ -187,7 +187,7 @@ const ProductForm: React.FC = () => {
           if (expiry <= today) return 'Expiry date must be in the future';
         }
         return '';
-      
+
       default:
         return '';
     }
@@ -196,17 +196,15 @@ const ProductForm: React.FC = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     const processedValue = type === 'number' ? (value === '' ? 0 : Number(value)) : value;
-    
+
     setForm(prev => ({ ...prev, [name]: processedValue }));
     setIsDirty(true);
-    
-    // Real-time validation
+
     if (submitAttempted || errors[name]) {
       const error = validateField(name, processedValue);
       setErrors(prev => ({ ...prev, [name]: error }));
     }
 
-    // Special case for price/cost price relationship
     if (name === 'price' || name === 'costPrice') {
       const updatedForm = { ...form, [name]: processedValue };
       if (updatedForm.price && updatedForm.costPrice && updatedForm.price <= updatedForm.costPrice) {
@@ -221,7 +219,7 @@ const ProductForm: React.FC = () => {
 
   const validateForm = (): boolean => {
     const newErrors: ValidationErrors = {};
-    
+
     Object.keys(form).forEach(key => {
       const error = validateField(key, form[key as keyof Product]);
       if (error) newErrors[key] = error;
@@ -234,9 +232,8 @@ const ProductForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitAttempted(true);
-    
+
     if (!validateForm()) {
-      // Scroll to first error
       const firstErrorField = document.querySelector('.border-red-300');
       firstErrorField?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
@@ -245,7 +242,6 @@ const ProductForm: React.FC = () => {
     setLoading(true);
 
     try {
-      // Clean and validate payload
       const payload: any = {
         name: form.name.trim(),
         category: form.category.trim(),
@@ -256,64 +252,23 @@ const ProductForm: React.FC = () => {
         store: form.store,
       };
 
-      // Add optional fields only if they have values
-      if (form.barcode?.trim()) {
-        payload.barcode = form.barcode.trim();
-      }
-      
-      if (form.brand?.trim()) {
-        payload.brand = form.brand.trim();
-      }
-      
-      if (form.description?.trim()) {
-        payload.description = form.description.trim();
-      }
-      
-      if (form.reorderLevel && Number(form.reorderLevel) > 0) {
-        payload.reorderLevel = Number(form.reorderLevel);
-      }
-      
-      if (form.imageUrl?.trim()) {
-        payload.imageUrl = form.imageUrl.trim();
-      }
-      
-      if (form.supplier?.trim()) {
-        payload.supplier = form.supplier.trim();
-      }
-      
-      if (form.expiryDate) {
-        payload.expiryDate = form.expiryDate;
-      }
+      if (form.barcode?.trim()) payload.barcode = form.barcode.trim();
+      if (form.brand?.trim()) payload.brand = form.brand.trim();
+      if (form.description?.trim()) payload.description = form.description.trim();
+      if (form.reorderLevel && Number(form.reorderLevel) > 0) payload.reorderLevel = Number(form.reorderLevel);
+      if (form.imageUrl?.trim()) payload.imageUrl = form.imageUrl.trim();
+      if (form.supplier?.trim()) payload.supplier = form.supplier.trim();
+      if (form.expiryDate) payload.expiryDate = form.expiryDate;
 
-      console.log("🧾 Final Payload:", payload);
-
-      const response = id 
+      const response = id
         ? await axiosInstance.put(`/products/${id}`, payload)
         : await axiosInstance.post(`/products`, payload);
 
-      console.log("✅ Success Response:", response.data);
       navigate('/inventory');
     } catch (err: any) {
-      console.error('❌ Submission Error:', err);
-      console.error('❌ Error Response:', err.response?.data);
-      
-      // More detailed error handling
       let errorMessage = 'Failed to save product. Please try again.';
-      
-      if (err.response?.data?.message) {
-        errorMessage = err.response.data.message;
-      } else if (err.response?.data?.error) {
-        errorMessage = err.response.data.error;
-      } else if (err.response?.data?.errors) {
-        // Handle validation errors from server
-        const serverErrors = err.response.data.errors;
-        if (Array.isArray(serverErrors)) {
-          errorMessage = serverErrors.join(', ');
-        } else if (typeof serverErrors === 'object') {
-          errorMessage = Object.values(serverErrors).join(', ');
-        }
-      }
-      
+      if (err.response?.data?.message) errorMessage = err.response.data.message;
+      else if (err.response?.data?.error) errorMessage = err.response.data.error;
       setErrors({ general: errorMessage });
     } finally {
       setLoading(false);
@@ -330,279 +285,220 @@ const ProductForm: React.FC = () => {
 
   if (id && loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="flex items-center gap-2 text-gray-600">
-          <Loader2 className="w-6 h-6 animate-spin" />
-          <span>Loading product details...</span>
-        </div>
+      <div className="flex flex-col justify-center items-center min-h-screen bg-slate-50 dark:bg-slate-900">
+        <RefreshCw className="w-10 h-10 animate-spin text-indigo-500 mb-4" />
+        <span className="text-slate-600 dark:text-slate-400 font-black uppercase tracking-widest text-xs">Synchronizing Product Data...</span>
       </div>
     );
   }
 
   const getFieldClassName = (fieldName: string) => {
-    const baseClasses = "w-full px-4 py-3 border rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent";
-    
+    const baseClasses = "w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border rounded-xl outline-none transition-all font-bold placeholder-slate-400 dark:placeholder-slate-500 shadow-inner";
+
     if (errors[fieldName]) {
-      return `${baseClasses} border-red-300 bg-red-50`;
+      return `${baseClasses} border-red-300 dark:border-red-900/50 text-red-600 dark:text-red-400 focus:ring-2 focus:ring-red-500`;
     }
-    
-    if (submitAttempted && !errors[fieldName] && form[fieldName as keyof Product]) {
-      return `${baseClasses} border-green-300 bg-green-50`;
-    }
-    
-    return `${baseClasses} border-gray-300 hover:border-gray-400`;
+
+    return `${baseClasses} border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500`;
   };
 
   return (
-    <div className="max-w-6xl mx-auto mt-8 mb-12 px-4">
-      <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-6">
-          <div className="flex items-center gap-3 text-white">
-            <div className="p-2 bg-white/20 rounded-lg">
-              <Package className="w-6 h-6" />
-            </div>
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 p-6">
+      <div className="max-w-4xl mx-auto">
+
+        {/* Header Section */}
+        <div className="mb-10 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={handleCancel}
+              className="p-3 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800 rounded-2xl shadow-sm border border-slate-200/50 dark:border-slate-700/50 transition-all"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
             <div>
-              <h1 className="text-2xl font-bold">
-                {id ? 'Edit Product' : 'Add New Product'}
+              <h1 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-none mb-1">
+                {id ? 'Update Asset' : 'New Inventory'}
               </h1>
-              <p className="text-blue-100 mt-1">
-                {id ? 'Update product information' : 'Enter details for the new product'}
+              <p className="text-slate-500 dark:text-slate-400 font-bold text-xs uppercase tracking-widest leading-none">
+                {id ? 'Modifying existing product record' : 'Registering new warehouse item'}
               </p>
             </div>
           </div>
+
+          <div className="flex items-center gap-3 px-5 py-3 bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800/50 rounded-2xl">
+            <Package className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+            <span className="text-indigo-700 dark:text-indigo-300 font-black text-xs uppercase tracking-widest">
+              {id ? `ID: ${id.slice(-6)}` : 'Draft Mode'}
+            </span>
+          </div>
         </div>
 
-        {/* Content */}
-        <div className="p-8">
+        {/* Form Container */}
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-[2.5rem] shadow-sm overflow-hidden p-8 sm:p-12">
+
           {errors.general && (
-            <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
-              <div className="text-red-700">{errors.general}</div>
+            <div className="mb-10 p-5 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-2xl flex items-center gap-4 font-bold uppercase tracking-widest text-xs animate-pulse">
+              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              {errors.general}
             </div>
           )}
 
-     
+          <form onSubmit={handleSubmit} className="space-y-12">
 
-          <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Basic Information */}
-            <div className="bg-gray-50 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <Tag className="w-5 h-5" />
-                Basic Information
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Product Name *
-                  </label>
-                  <input
-                    name="name"
-                    value={form.name}
-                    onChange={handleChange}
-                    className={getFieldClassName('name')}
-                    placeholder="Enter product name"
-                    required
-                  />
-                  {errors.name && (
-                    <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-                      <AlertCircle className="w-4 h-4" />
-                      {errors.name}
-                    </p>
-                  )}
-                </div>
+            {/* Section: Identity */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8">
+              <div className="md:col-span-2">
+                <h3 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
+                  <Tag className="w-3.5 h-3.5" />
+                  Identity & Branding
+                </h3>
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Barcode
-                  </label>
-                  <input
-                    name="barcode"
-                    value={form.barcode}
-                    onChange={handleChange}
-                    className={getFieldClassName('barcode')}
-                    placeholder="Enter barcode"
-                  />
-                  {errors.barcode && (
-                    <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-                      <AlertCircle className="w-4 h-4" />
-                      {errors.barcode}
-                    </p>
-                  )}
-                </div>
+              <div className="space-y-2">
+                <label className="text-xs font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest px-1">Product Designation *</label>
+                <input
+                  name="name"
+                  value={form.name}
+                  onChange={handleChange}
+                  className={getFieldClassName('name')}
+                  placeholder="e.g. Quantum Processor X1"
+                />
+                {errors.name && <p className="text-[10px] font-bold text-red-500 uppercase px-1">{errors.name}</p>}
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Category *
-                  </label>
+              <div className="space-y-2">
+                <label className="text-xs font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest px-1">SKU / Barcode</label>
+                <input
+                  name="barcode"
+                  value={form.barcode}
+                  onChange={handleChange}
+                  className={getFieldClassName('barcode')}
+                  placeholder="Scan or enter code"
+                />
+                {errors.barcode && <p className="text-[10px] font-bold text-red-500 uppercase px-1">{errors.barcode}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest px-1">Sector / Category *</label>
+                <div className="relative">
                   <select
                     name="category"
                     value={form.category}
                     onChange={handleChange}
                     className={getFieldClassName('category')}
-                    required
                   >
-                    <option value="">Select Category</option>
+                    <option value="">Choose Sector</option>
                     {PRODUCT_CATEGORIES.map(category => (
                       <option key={category} value={category}>{category}</option>
                     ))}
                   </select>
-                  {errors.category && (
-                    <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-                      <AlertCircle className="w-4 h-4" />
-                      {errors.category}
-                    </p>
-                  )}
+                  <ArrowLeft className="w-4 h-4 -rotate-90 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400" />
                 </div>
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Brand
-                  </label>
-                  <input
-                    name="brand"
-                    value={form.brand}
-                    onChange={handleChange}
-                    className={getFieldClassName('brand')}
-                    placeholder="Enter brand name"
-                  />
-                </div>
+              <div className="space-y-2">
+                <label className="text-xs font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest px-1">Manufacturer / Brand</label>
+                <input
+                  name="brand"
+                  value={form.brand}
+                  onChange={handleChange}
+                  className={getFieldClassName('brand')}
+                  placeholder="Brand name"
+                />
               </div>
             </div>
 
-            {/* Pricing & Inventory */}
-            <div className="bg-gray-50 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <DollarSign className="w-5 h-5" />
-                Pricing & Inventory
+            {/* Section: Financials */}
+            <div className="pt-10 border-t border-slate-100 dark:border-slate-700/50">
+              <h3 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-8 flex items-center gap-2">
+                <DollarSign className="w-3.5 h-3.5" />
+                Financial Logic & Stocks
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Selling Price * (₹)
-                  </label>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest px-1">Retail Price (₹) *</label>
                   <input
                     name="price"
-                    value={form.price || ''}
                     type="number"
-                    min="0"
                     step="0.01"
+                    value={form.price || ''}
                     onChange={handleChange}
                     className={getFieldClassName('price')}
                     placeholder="0.00"
-                    required
                   />
-                  {errors.price && (
-                    <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-                      <AlertCircle className="w-4 h-4" />
-                      {errors.price}
-                    </p>
-                  )}
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                    Cost Price * (₹)
-                    <button
-                      type="button"
-                      onClick={() => setShowCostPrice(!showCostPrice)}
-                      className="text-gray-400 hover:text-gray-600"
-                    >
-                      {showCostPrice ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest px-1 flex items-center justify-between">
+                    Acquisition (₹) *
+                    <button type="button" onClick={() => setShowCostPrice(!showCostPrice)} className="text-slate-400 hover:text-indigo-500">
+                      {showCostPrice ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
                     </button>
                   </label>
                   <input
                     name="costPrice"
-                    value={form.costPrice || ''}
                     type={showCostPrice ? "number" : "password"}
-                    min="0"
                     step="0.01"
+                    value={form.costPrice || ''}
                     onChange={handleChange}
                     className={getFieldClassName('costPrice')}
                     placeholder="0.00"
-                    required
                   />
-                  {errors.costPrice && (
-                    <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-                      <AlertCircle className="w-4 h-4" />
-                      {errors.costPrice}
-                    </p>
-                  )}
                   {form.price && form.costPrice && (
-                    <p className="mt-1 text-sm text-gray-600">
-                      Profit: ₹{(Number(form.price) - Number(form.costPrice)).toFixed(2)} 
-                      ({((Number(form.price) - Number(form.costPrice)) / Number(form.costPrice) * 100).toFixed(1)}%)
-                    </p>
+                    <div className="flex items-center gap-2 px-1">
+                      <div className="h-1 w-1 bg-emerald-500 rounded-full" />
+                      <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase">
+                        Margin: {((Number(form.price) - Number(form.costPrice)) / Number(form.costPrice) * 100).toFixed(1)}%
+                      </span>
+                    </div>
                   )}
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Quantity *
-                  </label>
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest px-1">Initial Reserve *</label>
                   <input
                     name="quantity"
-                    value={form.quantity || ''}
                     type="number"
-                    min="0"
+                    value={form.quantity || ''}
                     onChange={handleChange}
                     className={getFieldClassName('quantity')}
                     placeholder="0"
-                    required
                   />
-                  {errors.quantity && (
-                    <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-                      <AlertCircle className="w-4 h-4" />
-                      {errors.quantity}
-                    </p>
-                  )}
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Unit
-                  </label>
-                  <select
-                    name="unit"
-                    value={form.unit}
-                    onChange={handleChange}
-                    className={getFieldClassName('unit')}
-                  >
-                    <option value="pcs">Pieces</option>
-                    <option value="kg">Kilograms</option>
-                    <option value="ltr">Liters</option>
-                    <option value="g">Grams</option>
-                    <option value="ml">Milliliters</option>
-                    <option value="pack">Pack</option>
-                  </select>
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest px-1">Measurement Unit</label>
+                  <div className="relative">
+                    <select
+                      name="unit"
+                      value={form.unit}
+                      onChange={handleChange}
+                      className={getFieldClassName('unit')}
+                    >
+                      <option value="pcs">Pieces</option>
+                      <option value="kg">Kilograms</option>
+                      <option value="ltr">Liters</option>
+                      <option value="pack">Pack / Box</option>
+                    </select>
+                    <ArrowLeft className="w-4 h-4 -rotate-90 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400" />
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Reorder Level
-                  </label>
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest px-1 text-red-500">Critical Level</label>
                   <input
                     name="reorderLevel"
-                    value={form.reorderLevel || ''}
                     type="number"
-                    min="0"
+                    value={form.reorderLevel || ''}
                     onChange={handleChange}
                     className={getFieldClassName('reorderLevel')}
-                    placeholder="Minimum stock level"
+                    placeholder="Min stock"
                   />
-                  {errors.reorderLevel && (
-                    <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-                      <AlertCircle className="w-4 h-4" />
-                      {errors.reorderLevel}
-                    </p>
-                  )}
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                    <Calendar className="w-4 h-4" />
-                    Expiry Date
-                  </label>
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest px-1">Vulnerability Date</label>
                   <input
                     name="expiryDate"
                     type="date"
@@ -610,145 +506,108 @@ const ProductForm: React.FC = () => {
                     onChange={handleChange}
                     className={getFieldClassName('expiryDate')}
                   />
-                  {errors.expiryDate && (
-                    <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-                      <AlertCircle className="w-4 h-4" />
-                      {errors.expiryDate}
-                    </p>
-                  )}
                 </div>
               </div>
             </div>
 
-            {/* Store & Supplier */}
-            <div className="bg-gray-50 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <ShoppingCart className="w-5 h-5" />
-                Store & Supplier
+            {/* Section: Origin */}
+            <div className="pt-10 border-t border-slate-100 dark:border-slate-700/50">
+              <h3 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-8 flex items-center gap-2">
+                <ShoppingCart className="w-3.5 h-3.5" />
+                Distribution & Source
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Store *
-                  </label>
-                  {loadingStores ? (
-                    <div className="flex items-center gap-2 px-4 py-3 border rounded-lg bg-gray-50">
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span className="text-gray-600">Loading stores...</span>
-                    </div>
-                  ) : (
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest px-1">Deploy to Store *</label>
+                  <div className="relative">
                     <select
                       name="store"
                       value={form.store}
                       onChange={handleChange}
                       className={getFieldClassName('store')}
-                      required
                     >
-                      <option value="">Select Store</option>
+                      <option value="">Choose Node</option>
                       {stores.map(store => (
                         <option key={store._id} value={store._id}>{store.name}</option>
                       ))}
                     </select>
-                  )}
-                  {errors.store && (
-                    <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-                      <AlertCircle className="w-4 h-4" />
-                      {errors.store}
-                    </p>
-                  )}
+                    <ArrowLeft className="w-4 h-4 -rotate-90 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400" />
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Supplier
-                  </label>
-                  {loadingSuppliers ? (
-                    <div className="flex items-center gap-2 px-4 py-3 border rounded-lg bg-gray-50">
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span className="text-gray-600">Loading suppliers...</span>
-                    </div>
-                  ) : (
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest px-1">Primary Supplier</label>
+                  <div className="relative">
                     <select
                       name="supplier"
                       value={form.supplier}
                       onChange={handleChange}
                       className={getFieldClassName('supplier')}
                     >
-                      <option value="">Select Supplier (optional)</option>
+                      <option value="">Choose Source</option>
                       {suppliers.map(s => (
                         <option key={s._id} value={s._id}>{s.name}</option>
                       ))}
                     </select>
-                  )}
-                  {errors.suppliers && (
-                    <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-                      <AlertCircle className="w-4 h-4" />
-                      {errors.suppliers}
-                    </p>
-                  )}
+                    <ArrowLeft className="w-4 h-4 -rotate-90 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400" />
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Additional Details */}
-            <div className="bg-gray-50 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Additional Details
+            {/* Section: Meta */}
+            <div className="pt-10 border-t border-slate-100 dark:border-slate-700/50">
+              <h3 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-8">
+                Technical Specifications & Media
               </h3>
+
               <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Image URL
-                  </label>
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest px-1">Identifier Image URL</label>
                   <input
                     name="imageUrl"
                     value={form.imageUrl}
                     onChange={handleChange}
                     className={getFieldClassName('imageUrl')}
-                    placeholder="https://example.com/product-image.jpg"
+                    placeholder="https://cloud.assets.com/item.jpg"
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Description
-                  </label>
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest px-1">Product Dossier</label>
                   <textarea
                     name="description"
                     value={form.description}
                     onChange={handleChange}
                     rows={4}
                     className={getFieldClassName('description')}
-                    placeholder="Enter product description..."
+                    placeholder="Enter detailed specifications..."
                   />
                 </div>
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex justify-end gap-4 pt-6 border-t">
+            {/* Actions */}
+            <div className="pt-12 flex flex-col sm:flex-row gap-4">
               <button
                 type="button"
                 onClick={handleCancel}
-                className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
+                className="flex-1 px-8 py-4 bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-white dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-all shadow-sm"
               >
-                <X className="w-4 h-4" />
-                Cancel
+                Discard Entry
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2 min-w-[140px] justify-center"
+                className="flex-[2] py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black uppercase tracking-[0.2em] text-sm transition-all active:scale-95 shadow-xl shadow-indigo-200 dark:shadow-none disabled:opacity-50 flex items-center justify-center gap-3"
               >
                 {loading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Saving...
-                  </>
+                  <RefreshCw className="w-5 h-5 animate-spin" />
                 ) : (
                   <>
-                    <Save className="w-4 h-4" />
-                    {id ? 'Update Product' : 'Add Product'}
+                    <Save className="w-5 h-5" />
+                    {id ? 'Synchronize Record' : 'Initialize Product'}
                   </>
                 )}
               </button>
